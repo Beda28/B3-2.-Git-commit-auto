@@ -1,5 +1,9 @@
-from google import genai
-from dotenv import load_dotenv
+import logging
+logging.disable(logging.CRITICAL)
+
+from google       import genai
+from google.genai import types
+from dotenv       import load_dotenv
 
 import subprocess
 import os
@@ -16,7 +20,7 @@ def getPrompt(rtype: str,       model: str,
 
     prompt = f"""
             다음은 git status, git diff 명령어의 실행 결과이다. 
-            해당 결과를 보고, 커밋 메시지를 작성하라.
+            해당 결과를 보고, {rtype} 메시지를 작성하라.
             status: {status.stdout} / diff: {diff.stdout}"""
 
     if rtype == "commit":
@@ -25,7 +29,8 @@ def getPrompt(rtype: str,       model: str,
             1. 커밋 메시지는 변경 사항 요약을 기반으로 생성되어야 한다.
             2. 출력 결과에는 커밋 제목 1줄이 필수로 포함되어야 한다.
             3. 커밋 메시지는 50자 이내를 권장하며, 최대 72자로 제한한다.
-            4. 커밋 메시지 작성 규약을 따르도록 합니다."""
+            4. 커밋 메시지 작성 규약을 따르도록 한다.
+            5. 커밋 메시지 제목 한줄만 출력한다."""
     elif rtype == "pr":
         prompt += f"""
             작성 규칙은 다음을 따른다.
@@ -43,7 +48,14 @@ def getPrompt(rtype: str,       model: str,
             1. 필요없는 이모지/설명은 사용하지 않는다.
             2. 실제와 다른 내용을 임의로 넣지 않는다.
             3. 간략하게, 한눈에 보일 수 있도록 핵심적인 요소들만 추려서 답변하도록 한다.
-            4. 파일명을 설명할 때 강조하지 않는다."""
+            4. 파일명을 설명할 때 강조하지 않는다.
+            5. 추가 내용을 출력하지 않는다. 답변을 진행할떄에는 요청사항들만을 반환한다.
+            6. 내부적으로 최선의 결과 하나만을 출력하며, 사용자에게 여러가지 선택지를 제공하지 않는다.
+            7. 결과물을 제외한 추가 텍스트를 출력하지 않는다."""
         
-    result = client.interactions.create(model=model, input=prompt)
-    return result.output_text
+    result = client.models.generate_content(
+        model=model, contents=prompt,
+        config=types.GenerateContentConfig(
+            temperature      =temperature,
+            max_output_tokens=tokens))
+    return result.text
