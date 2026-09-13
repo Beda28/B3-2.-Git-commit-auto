@@ -13,8 +13,8 @@ load_dotenv()
 key    = os.getenv('API_KEY')
 client = genai.Client(api_key=key)
 
-def getPrompt(rtype: str,       model: str, 
-              temperature: str, tokens: str):
+def getPrompt(rtype: str,         model: str, 
+              temperature: float, tokens: int):
     status = subprocess.run("git status", shell=True, capture_output=True, text=True, encoding='utf-8')
     diff   = subprocess.run("git diff",   shell=True, capture_output=True, text=True, encoding='utf-8')
 
@@ -45,14 +45,13 @@ def getPrompt(rtype: str,       model: str,
         
     prompt += f"""
             또한 답변 작성시 다음을 따른다.
-            1. 필요없는 이모지/설명은 사용하지 않는다.
+            1. 필요없는 이모지는 사용하지 않는다.
             2. 실제와 다른 내용을 임의로 넣지 않는다.
             3. 간략하게, 한눈에 보일 수 있도록 핵심적인 요소들만 추려서 답변하도록 한다.
             4. 파일명을 설명할 때 강조하지 않는다.
-            5. 추가 내용을 출력하지 않는다. 답변을 진행할떄에는 요청사항들만을 반환한다.
-            6. 내부적으로 최선의 결과 하나만을 출력하며, 사용자에게 여러가지 선택지를 제공하지 않는다.
-            7. 결과물을 제외한 추가 텍스트를 출력하지 않는다."""
-        
+            5. 하나의 최종 결과만을 출력한다. 다른 선택지를 추가로 제공하지 않는다.
+            6. 결과물을 제외한 내용은 출력하지 않는다."""
+
     result = client.models.generate_content(
         model=model, contents=prompt,
         config=types.GenerateContentConfig(
