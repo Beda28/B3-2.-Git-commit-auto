@@ -9,7 +9,8 @@ load_dotenv()
 key    = os.getenv('API_KEY')
 client = genai.Client(api_key=key)
 
-def getPrompt(rtype: str):
+def getPrompt(rtype: str,       model: str, 
+              temperature: str, tokens: str):
     status = subprocess.run("git status", shell=True, capture_output=True, text=True, encoding='utf-8')
     diff   = subprocess.run("git diff",   shell=True, capture_output=True, text=True, encoding='utf-8')
 
@@ -23,7 +24,8 @@ def getPrompt(rtype: str):
             메시지 작성 규칙은 다음을 따른다.
             1. 커밋 메시지는 변경 사항 요약을 기반으로 생성되어야 한다.
             2. 출력 결과에는 커밋 제목 1줄이 필수로 포함되어야 한다.
-            3. 커밋 메시지는 50자 이내를 권장하며, 최대 72자로 제한한다."""
+            3. 커밋 메시지는 50자 이내를 권장하며, 최대 72자로 제한한다.
+            4. 커밋 메시지 작성 규약을 따르도록 합니다."""
     elif rtype == "pr":
         prompt += f"""
             작성 규칙은 다음을 따른다.
@@ -43,5 +45,5 @@ def getPrompt(rtype: str):
             3. 간략하게, 한눈에 보일 수 있도록 핵심적인 요소들만 추려서 답변하도록 한다.
             4. 파일명을 설명할 때 강조하지 않는다."""
         
-    result = client.interactions.create(model="gemini-3.6-flash", input=prompt)
+    result = client.interactions.create(model=model, input=prompt)
     return result.output_text
