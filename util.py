@@ -5,10 +5,9 @@ def copy(result: str):
     if input("복사하시려면 1을 입력해주세요 : ") == "1":
         subprocess.run(
             "clip",
-            input=result,
-            text=True,
-            shell=True
+            input = result,
+            text  = True,
+            shell = True
         )
         print("클립보드에 복사되었습니다!")
-    else:
-        print("프로그램 종료")
+    else: print("프로그램 종료")
