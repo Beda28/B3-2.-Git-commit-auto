@@ -4,18 +4,20 @@ logging.disable(logging.CRITICAL)
 from google       import genai
 from google.genai import types
 from dotenv       import load_dotenv
+from util         import safe_diff
 
 import subprocess
 import os
 
 load_dotenv()
 
-key    = os.getenv('API_KEY')
+key       = os.getenv('API_KEY')
 if not key: raise EnvironmentError("API_KEY가 설정되지 않았습니다.")
-client = genai.Client(api_key=key)
+client    = genai.Client(api_key=key)
 
 def getPrompt(rtype: str,         model: str, 
-              temperature: float, tokens: int):
+              temperature: float, tokens: int, safe: bool):
+    
     check  = subprocess.run("git status --porcelain", shell=True, capture_output=True, text=True, encoding='utf-8')
     if not check.stdout.strip():
         print("변경사항이 없습니다.")
@@ -24,10 +26,13 @@ def getPrompt(rtype: str,         model: str,
     status = subprocess.run("git status", shell=True, capture_output=True, text=True, encoding='utf-8')
     diff   = subprocess.run("git diff",   shell=True, capture_output=True, text=True, encoding='utf-8')
 
+    if safe: diff_result = safe_diff(diff.stdout)
+    else:    diff_result = diff.stdout
+
     prompt = f"""
             다음은 git status, git diff 명령어의 실행 결과이다. 
             해당 결과를 보고, {rtype} 메시지를 작성하라.
-            status: {status.stdout} / diff: {diff.stdout}"""
+            status: {status.stdout} / diff: {diff_result}"""
 
     if rtype == "commit":
         prompt += f"""

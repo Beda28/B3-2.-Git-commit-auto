@@ -12,6 +12,7 @@ def main():
     parser.add_argument("--model",       default="gemini-3.6-flash")
     parser.add_argument("--temperature", default=0.3, type=float)
     parser.add_argument("--max-tokens",  default=500, type=int)
+    parser.add_argument("--safe-mode",   action="store_true")
 
     args = parser.parse_args()
 
@@ -19,10 +20,12 @@ def main():
         args.command, 
         args.model,
         args.temperature, 
-        args.max_tokens )
+        args.max_tokens,
+        args.safe_mode )
 
     print(result)
-    copy(result)
+
+    if not result: copy(result)
 
 if __name__ == "__main__":
     main()
