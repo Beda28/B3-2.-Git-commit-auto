@@ -75,7 +75,8 @@ def getPrompt(rtype: str,         model: str,
     elif rtype == "pr":     pass_date = validate_pr(result.text)
 
     if not pass_date:
+        print(result.text)
         print("결과 메시지가 제대로 출력되지 않았습니다.")
-        return False
+        return ""
 
     return result.text
