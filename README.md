@@ -31,7 +31,14 @@ python3 main.py pr      # 변경사항 기준으로 pr 초안 생성
 # 4. 생성 결과
 ```bash
 # 커밋 메시지는 변경사항을 요약한 한 줄의 제목으로 생성됩니다.
-# ex: feat: Git 변경사항 기반 커밋 메시지 생성 기능 추가
+python .\main.py commit  
+refactor: commit 및 PR 프롬프트 작성 규칙 개선 및 문서 업데이트
+
+python .\main.py commit --temperature 0.7 --max-tokens 1500
+refactor: commit 및 PR 프롬프트 작성 규칙 개선
+
+python .\main.py commit --max-tokens 1500                  
+refactor: prompt.py 프롬프트 지침 개선 및 README 예시 업데이트
 
 # pr은 다음 구조를 기준으로 생성됩니다.
 ```
