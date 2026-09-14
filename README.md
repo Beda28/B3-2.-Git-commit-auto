@@ -30,7 +30,6 @@ python3 main.py pr      # 변경사항 기준으로 pr 초안 생성
 
 # 4. 생성 결과
 ```bash
-# 커밋 메시지는 변경사항을 요약한 한 줄의 제목으로 생성됩니다.
 python .\main.py commit  
 refactor: commit 및 PR 프롬프트 작성 규칙 개선 및 문서 업데이트
 
@@ -39,8 +38,39 @@ refactor: commit 및 PR 프롬프트 작성 규칙 개선
 
 python .\main.py commit --max-tokens 1500                  
 refactor: prompt.py 프롬프트 지침 개선 및 README 예시 업데이트
+---
+python .\main.py pr    
+test.py 파일 추가
 
-# pr은 다음 구조를 기준으로 생성됩니다.
+Why
+- test.py 파일이 새롭게 추가됨
+
+What
+- 신규 파일 test.py 추가
+
+How To Test
+- git status 명령어로 test.py 파일 포함 여부 확인
+---
+python .\main.py pr --max-tokens 500
+docs: README.md에 pr 명령어 실행 예시 추가
+
+Why
+- pr 명령어
+결과 메시지가 제대로 출력되지 않았습니다.
+---
+python .\main.py pr --temperature 0.8
+docs: README.md에 pr 명령어 실행 예시 추가 및 test.py 파일 추가
+
+Why
+- pr 명령어 사용 예시를 README.md 문서에 구체적으로 안내하기 위함
+
+What
+- README.md에 pr 명령어 및 옵션 실행 예시 추가
+- 신규 파일 test.py 추가
+
+How To Test
+- README.md 파일 내용 및 예시 구문 확인
+- git status 명령어로 test.py 파일 추가 상태 확인
 ```
 
 # 5. 출력 검증
