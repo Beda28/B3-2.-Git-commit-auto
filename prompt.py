@@ -69,7 +69,13 @@ def getPrompt(rtype: str,         model: str,
             temperature      =temperature,
             max_output_tokens=tokens))
 
-    if   rtype == "commit": validate_commit(result.text)
-    elif rtype == "pr":     validate_pr(result.text)
+    pass_date = False
+
+    if   rtype == "commit": pass_date = validate_commit(result.text)
+    elif rtype == "pr":     pass_date = validate_pr(result.text)
+
+    if not pass_date:
+        print("결과 메시지가 제대로 출력되지 않았습니다.")
+        return False
 
     return result.text
