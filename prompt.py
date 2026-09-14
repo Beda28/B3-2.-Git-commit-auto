@@ -4,7 +4,7 @@ logging.disable(logging.CRITICAL)
 from google       import genai
 from google.genai import types
 from dotenv       import load_dotenv
-from util         import safe_diff
+from util         import safe_diff, validate_commit, validate_pr
 
 import subprocess
 import os
@@ -56,7 +56,7 @@ def getPrompt(rtype: str,         model: str,
         
     prompt += f"""
             또한 답변 작성시 다음을 따른다.
-            1. 필요없는 이모지는 사용하지 않는다.
+            1. 필요없는 이모지 / 텍스트는 사용하지 않는다.
             2. 실제와 다른 내용을 임의로 넣지 않는다.
             3. 간략하게, 한눈에 보일 수 있도록 핵심적인 요소들만 추려서 답변하도록 한다.
             4. 파일명을 설명할 때 강조하지 않는다.
@@ -68,5 +68,8 @@ def getPrompt(rtype: str,         model: str,
         config=types.GenerateContentConfig(
             temperature      =temperature,
             max_output_tokens=tokens))
+
+    if   rtype == "commit": validate_commit(result.text)
+    elif rtype == "pr":     validate_pr(result.text)
 
     return result.text

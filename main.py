@@ -25,7 +25,7 @@ def main():
 
     print(result)
 
-    if not result: copy(result)
+    if result: copy(result)
 
 if __name__ == "__main__":
     main()

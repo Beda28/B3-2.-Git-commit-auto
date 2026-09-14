@@ -27,3 +27,36 @@ def safe_diff(diff: str):
         if len(result) >= 200: break
 
     return "\n".join(result)
+
+def validate_commit(result: str):
+    result = result.strip()
+
+    if not result      : return False
+    if "\n" in result  : return False
+    if len(result) > 72: return False
+    return True
+
+def validate_pr(result: str):
+    result   = result.strip()
+    if not result: return False
+
+    lines    = result.splitlines()
+    sections = [
+        "Why",
+        "What",
+        "How To Test"
+    ]
+    if len(lines[0]) > 80: return False
+
+    for sec in sections:
+        if sec not in result:
+            return False
+
+    for i, line in enumerate(lines):
+        if any(section in line for section in sections):
+            if i + 1 >= len(lines): 
+                return False
+            if not lines[i + 1].strip().startswith(("-", "*")):
+                return False
+
+    return True
