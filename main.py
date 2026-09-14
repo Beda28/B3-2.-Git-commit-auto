@@ -24,7 +24,6 @@ def main():
         args.safe_mode )
 
     print(result)
-
     if result: copy(result)
 
 if __name__ == "__main__":
